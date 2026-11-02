@@ -46,8 +46,9 @@ Its real native window was opened and inspected. The README screenshot is an
 unaltered capture of the running application with a private-data-free profile.
 The final desktop/UI suite passed 127 tests. The Python suite ran 65 tests:
 64 passed, one skipped because the optional `file` executable is absent.
-All 12 Python-workbench skills validated. Formatting passed. Additional Rust
-quality checks and remote CI status are recorded in the PR.
+All 12 Python-workbench skills validated. Formatting, Clippy with warnings
+denied, layer checks, lock checks (351 files) and the source secret scan passed.
+Remote CI status is recorded in the PR.
 
 The upstream npm installation reported 11 moderate dependency advisories. No
 automatic dependency upgrades were applied. Review the pinned dependency audit

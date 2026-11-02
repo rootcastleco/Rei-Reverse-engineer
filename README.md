@@ -39,6 +39,10 @@ plugins require Deep mode. Existing user settings are retained. The servers
 keep their own evidence stores while their results flow through the same
 desktop evidence interface.
 
+After building, double-click `REI Reverse Engineer.cmd` to open the combined
+workbench. The standalone executable opens the Rust app; the launcher supplies
+the shared MCP profile and Python runtime discovery.
+
 - [Desktop setup and source attribution](desktop/README.md)
 - [Measured integration evidence and remaining limitations](docs/DESKTOP-VERIFICATION.md)
 - [Python CLI and MCP quick start](#quick-start)
