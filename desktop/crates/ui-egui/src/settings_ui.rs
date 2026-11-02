@@ -521,7 +521,7 @@ fn ai(app: &mut CraftApp, ui: &mut Ui) {
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                     if configured {
                         widgets::pill(ui, "Added", t.success, t.raised);
-                    } else if !d.needs_key && widgets::primary(ui, "Add").clicked() {
+                    } else if !d.needs_key && widgets::named(widgets::primary(ui, "Add"), &format!("Connect {}", d.suggestion.name)).clicked() {
                         app.add_backend(d.suggestion.clone(), None);
                     }
                 });
@@ -537,7 +537,9 @@ fn ai(app: &mut CraftApp, ui: &mut Ui) {
                             .frame(widgets::text_field_frame_compact(&Tokens::get(ui.ctx()))),
                     );
                     let k = key.trim().to_string();
-                    if widgets::primary_icon(ui, None, "Add", !k.is_empty()).clicked() && !k.is_empty() {
+                    if widgets::named(widgets::primary_icon(ui, None, "Add", !k.is_empty()), &format!("Connect {}", d.suggestion.name)).clicked()
+                        && !k.is_empty()
+                    {
                         // The key goes to the keychain; the app keeps no copy of it.
                         app.key_inputs.remove(&d.suggestion.name);
                         app.add_backend(d.suggestion.clone(), Some(k));
@@ -548,6 +550,43 @@ fn ai(app: &mut CraftApp, ui: &mut Ui) {
         ui.add_space(6.0);
     }
     server_form(app, ui);
+    account_connections(app, ui);
+}
+
+/// Provider-owned browser OAuth; the app never reads browser cookies or auth caches.
+fn account_connections(app: &mut CraftApp, ui: &mut Ui) {
+    let t = Tokens::get(ui.ctx());
+    let signing_in = app.jobs.running().any(|job| job.title == "Complete provider sign-in in your browser");
+    ui.add_space(12.0);
+    widgets::caption(ui, "Connect with an account — no API key");
+    ui.label(
+        RichText::new("Sign-in opens your browser through the official installed CLI. Account entitlements and usage limits still apply.")
+            .color(t.text_faint)
+            .size(theme::CAPTION),
+    );
+    for (agent, program, label, docs) in [
+        ("codex", "codex", "Sign in with ChatGPT", "https://learn.chatgpt.com/docs/auth?surface=cli"),
+        ("antigravity", "agy", "Sign in with Google (Antigravity)", "https://antigravity.google/docs/install?tab=cli"),
+    ] {
+        let installed =
+            app.detected.as_ref().is_some_and(|found| found.iter().any(|d| d.suggestion.kind == BackendKind::AgentCli && d.suggestion.model == agent));
+        ui.horizontal(|ui| {
+            if widgets::primary_icon(ui, None, label, installed && !signing_in).clicked() {
+                app.login_account(agent);
+            }
+            ui.hyperlink_to("Official setup", docs);
+            if !installed {
+                ui.label(RichText::new(format!("Install {program} first")).color(t.text_faint));
+            }
+        });
+    }
+    ui.hyperlink_to("Open Codex Cloud in browser", "https://chatgpt.com/codex");
+    ui.label(
+        RichText::new("Codex Cloud opens your web workspace. Local analysis/build tasks use the signed-in Codex CLI, not a cloud-chat API.")
+            .color(t.text_faint)
+            .size(theme::CAPTION),
+    );
+    ui.hyperlink_to("Experiential Labs models and API keys", "https://platform.experientiallabs.ai/models");
 }
 
 /// An AI that "Look for AI" can't find: a server on another computer or a hosted service, added by

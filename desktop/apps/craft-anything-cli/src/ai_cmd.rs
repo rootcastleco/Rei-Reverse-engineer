@@ -27,6 +27,8 @@ pub struct ChatArgs {
 
 #[derive(Debug, Subcommand)]
 pub enum AiCommand {
+    /// Complete browser sign-in using the official installed CLI (codex or antigravity).
+    Login { agent: String },
     /// Configured backends.
     List,
     /// Look for keys, local servers, agent CLIs and SSH hosts.
@@ -192,6 +194,31 @@ pub fn ai(cli: &Cli, c: &AiCommand, f: Format) -> u8 {
         Err(e) => return fail(&e, f),
     };
     match c {
+        AiCommand::Login { agent } => {
+            let cancel = craft_anything_engine::CancelToken::default();
+            let done = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
+            let watch_done = done.clone();
+            let watch_cancel = cancel.clone();
+            let watcher = std::thread::spawn(move || {
+                while !watch_done.load(Ordering::Relaxed) {
+                    if INTERRUPTED.load(Ordering::Relaxed) {
+                        watch_cancel.cancel();
+                        break;
+                    }
+                    std::thread::sleep(Duration::from_millis(50));
+                }
+            });
+            let result = craft_anything_ai::connections::login(agent, cancel);
+            done.store(true, Ordering::Relaxed);
+            let _ = watcher.join();
+            match result {
+                Ok(()) => {
+                    emit(&json!({"agent": agent, "login_completed": true, "credentials": "owned by official CLI"}), f);
+                    0
+                }
+                Err(e) => fail(&e, f),
+            }
+        }
         AiCommand::List => {
             let v: Vec<Value> = hub
                 .backends()

@@ -104,6 +104,7 @@ const ACTIONS: &[Action] = &[
 
     // ---- AI brains ---------------------------------------------------------------------------
     a("refresh_backends",    "the connected AI brains",                        Cli("ai list")),
+    a("login_account",       "browser sign-in through the official agent CLI", Cli("ai login <agent>")),
     a("detect_backends",     "find AI on this computer",                       Cli("ai detect")),
     a("add_backend",         "connect an AI brain",                            Cli("ai add <name> --kind --model --base-url --ssh-host --key-env --key-stdin")),
     a("add_server",          "connect an AI server by its address",            Cli("ai add <name> --kind --base-url --key-env --key-stdin")),

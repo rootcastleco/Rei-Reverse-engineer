@@ -52,6 +52,15 @@ pub fn env_var(kind: BackendKind) -> Option<&'static str> {
     }
 }
 
+/// Hosted presets never borrow another provider's environment credential.
+pub fn env_var_for_backend(backend: &str, kind: BackendKind) -> Option<&'static str> {
+    if kind == BackendKind::OpenaiCompatible && backend == crate::connections::EXPERIENTIAL_NAME {
+        Some(crate::connections::EXPERIENTIAL_KEY)
+    } else {
+        env_var(kind)
+    }
+}
+
 /// Where keys live.
 #[derive(Debug, Clone)]
 pub struct KeyStore {
@@ -109,7 +118,7 @@ impl KeyStore {
 
     /// The key to use: stored, else the kind's environment variable.
     pub fn resolve(&self, backend: &str, kind: BackendKind) -> Option<String> {
-        self.get(backend).or_else(|| env_var(kind).and_then(|v| std::env::var(v).ok()).filter(|k| !k.trim().is_empty()))
+        self.get(backend).or_else(|| env_var_for_backend(backend, kind).and_then(|v| std::env::var(v).ok()).filter(|k| !k.trim().is_empty()))
     }
 
     /// Save a key. Returns where it went: `"keychain"` or `"file"`.

@@ -151,6 +151,10 @@ pub enum Done {
         result: Result<Value, ToolError>,
     },
     Detected(Vec<Detected>),
+    AccountLogin {
+        agent: String,
+        result: Result<(), ToolError>,
+    },
     /// The configured backends, the ones chosen to build with and to extract with, and each one's
     /// options.
     Backends(Vec<BackendConfig>, Option<String>, Option<String>, std::collections::BTreeMap<String, craft_anything_ai::BackendOptions>),
@@ -1048,6 +1052,14 @@ impl CraftApp {
         });
     }
 
+    pub fn login_account(&mut self, agent: &str) {
+        let agent = agent.to_string();
+        self.jobs.spawn("Complete provider sign-in in your browser", true, move |cx| {
+            let result = craft_anything_ai::connections::login(&agent, cx.cancel.clone());
+            Ok(Done::AccountLogin { agent, result })
+        });
+    }
+
     pub fn detect_backends(&mut self) {
         if self.detecting {
             return;
@@ -1289,6 +1301,23 @@ impl CraftApp {
                     self.log(true, format!("Couldn't open {}: {}", path.display(), e.message));
                     self.toast(e.for_people(), true);
                 }
+            },
+            Done::AccountLogin { agent, result } => match result {
+                Ok(()) => {
+                    let name = if agent == "codex" { "Codex (ChatGPT account)" } else { "Antigravity (Google account)" };
+                    self.add_backend(
+                        BackendConfig {
+                            name: name.into(),
+                            kind: craft_anything_ai::BackendKind::AgentCli,
+                            model: agent,
+                            base_url: None,
+                            ssh_host: None,
+                            enabled: true,
+                        },
+                        None,
+                    );
+                }
+                Err(e) => self.toast(e.for_people(), true),
             },
             Done::Detected(d) => {
                 self.detecting = false;

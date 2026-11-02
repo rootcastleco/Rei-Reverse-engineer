@@ -44,6 +44,7 @@ workbench. The standalone executable opens the Rust app; the launcher supplies
 the shared MCP profile and Python runtime discovery.
 
 - [Desktop setup and source attribution](desktop/README.md)
+- [Experiential API and account-based Codex/Antigravity connections](docs/AI-CONNECTIONS.md)
 - [Measured integration evidence and remaining limitations](docs/DESKTOP-VERIFICATION.md)
 - [Python CLI and MCP quick start](#quick-start)
 

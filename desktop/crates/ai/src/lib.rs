@@ -10,6 +10,7 @@ pub mod agent;
 pub mod anthropic;
 pub mod cli_agents;
 pub mod config;
+pub mod connections;
 pub mod context;
 pub mod detect;
 pub mod failure_log;
@@ -519,7 +520,10 @@ impl AiHub {
 
     /// True when a key is stored or in the environment (keys themselves are never returned).
     pub fn has_key(&self, name: &str) -> bool {
-        self.config().get(name).is_some_and(|b| !b.config.kind.needs_key() || self.keys.resolve(name, b.config.kind).is_some())
+        self.config().get(name).is_some_and(|b| {
+            let requires_key = b.config.kind.needs_key() || (b.config.kind == BackendKind::OpenaiCompatible && name == connections::EXPERIENTIAL_NAME);
+            !requires_key || self.keys.resolve(name, b.config.kind).is_some()
+        })
     }
 
     fn entry(&self, name: &str) -> Result<BackendEntry, ToolError> {
@@ -571,7 +575,7 @@ impl AiHub {
             BackendKind::Openai => Box::new(openai::OpenAi::official(base, self.key_for(e)?, &c.model)),
             BackendKind::Openrouter => Box::new(openai::OpenAi::openrouter(base, self.key_for(e)?, &c.model)),
             BackendKind::OpenaiCompatible => {
-                let mut o = openai::OpenAi::compatible(&c.name, base.unwrap_or("http://127.0.0.1:11434/v1"), self.keys.get(&c.name), &c.model);
+                let mut o = openai::OpenAi::compatible(&c.name, base.unwrap_or("http://127.0.0.1:11434/v1"), self.keys.resolve(&c.name, c.kind), &c.model);
                 o.react = e.options.react_fallback.unwrap_or(false);
                 Box::new(o)
             }
@@ -687,7 +691,8 @@ impl AiHub {
                 if e.config.ssh_host.as_deref().is_some_and(|h| !h.trim().is_empty()) {
                     return Err(ToolError::unavailable("Listing models on a remote server isn't supported yet.").with_remediation("Type the model name."));
                 }
-                openai::OpenAi::compatible(&e.config.name, base.unwrap_or("http://127.0.0.1:11434/v1"), self.keys.get(&e.config.name), "").list_models(t)
+                openai::OpenAi::compatible(&e.config.name, base.unwrap_or("http://127.0.0.1:11434/v1"), self.keys.resolve(&e.config.name, e.config.kind), "")
+                    .list_models(t)
             }
             BackendKind::AgentCli => Ok(BackendKind::AgentCli.suggested_models().iter().map(|s| s.to_string()).collect()),
         }

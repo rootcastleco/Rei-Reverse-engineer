@@ -14,6 +14,24 @@ struct Seen {
     body: Value,
 }
 
+#[test]
+fn experiential_preset_streams_and_lists_models_with_its_own_key() {
+    let response = chat_sse(&[json!({"choices":[{"delta":{"content":"gateway ready"},"finish_reason":"stop"}]})]);
+    let (url, seen) = mock(vec![(200, "text/event-stream", response), (200, "application/json", json!({"data":[{"id":"gateway-model"}]}).to_string())]);
+    let (h, _dir) = hub();
+    let mut preset = connections::experiential(false).suggestion;
+    preset.base_url = Some(format!("{url}/v1"));
+    h.add_backend(preset, Some("xpl-test-placeholder".into())).unwrap();
+    let mut conversation = h.start(Some(connections::EXPERIENTIAL_NAME), true).unwrap();
+    let events = run(&mut conversation, "hello");
+    assert!(events.iter().any(|e| matches!(e, AgentEvent::TextDelta { text } if text == "gateway ready")), "{events:?}");
+    assert_eq!(h.list_models(connections::EXPERIENTIAL_NAME).unwrap(), vec!["gateway-model"]);
+    let seen = seen.lock().unwrap();
+    assert_eq!(seen[0].path, "/v1/chat/completions");
+    assert_eq!(seen[1].path, "/v1/models");
+    assert!(seen.iter().all(|r| r.header("authorization") == Some("Bearer xpl-test-placeholder")));
+}
+
 impl Seen {
     fn header(&self, k: &str) -> Option<&str> {
         self.headers.iter().find(|(n, _)| n.eq_ignore_ascii_case(k)).map(|(_, v)| v.as_str())
