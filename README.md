@@ -1,151 +1,139 @@
-# REI Reverse Engineer
+<p align="center">
+  <a href="https://rootcastle.com"><img src="docs/images/rootcastle-rei-hero.svg" alt="Rootcastle Engineering &amp; Innovation — REI Reverse Engineer. Inspect the artifact. Trace the evidence." width="100%"></a>
+</p>
 
-**Native desktop fork:** [Rootcastle REI Desktop](desktop/ROOTCASTLE.md) adapts
-the Craft Anything Rust application under its original open-source licenses.
-Its source is in `desktop/`; `scripts/build_desktop.ps1` builds the Windows
-application. The Rust desktop and Python workbench currently have separate engines
-and evidence stores. See the desktop guide for verification status and provenance.
+<h1 align="center">REI Reverse Engineer</h1>
 
-## Native desktop preview
+<p align="center"><strong>Inspect the artifact. Trace the evidence. Understand the system.</strong></p>
+<p align="center">A native research workbench connecting software analysis, AI assistance and reproducible evidence.<br>Built by <a href="https://rootcastle.com">Rootcastle Engineering &amp; Innovation</a>.</p>
 
-**REI Reverse Engineer** brings the Rust desktop engine, the Python REI
-workbench and the original REA MCP server into one native tool interface.
-The Windows preview was built and opened locally. The bridge discovered
-14 Python tools and 234 upstream tools, and completed real static-analysis
-calls through both servers. Individual engine operations have separate
-requirements and verification status.
+<p align="center">
+  <a href="https://github.com/rootcastleco/Rei-Reverse-engineer/actions/workflows/ci.yml"><img src="https://github.com/rootcastleco/Rei-Reverse-engineer/actions/workflows/ci.yml/badge.svg" alt="Python quality gates"></a>
+  <a href="https://github.com/rootcastleco/Rei-Reverse-engineer/actions/workflows/desktop.yml"><img src="https://github.com/rootcastleco/Rei-Reverse-engineer/actions/workflows/desktop.yml/badge.svg" alt="Native desktop checks"></a>
+  <a href="docs/DESKTOP-SPEC.md"><img src="https://img.shields.io/badge/release-0.3%20desktop%20preview-003478" alt="0.3 desktop preview"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/core-MIT-003478" alt="Core license: MIT"></a>
+</p>
 
-![REI Reverse Engineer — actual Windows application](docs/images/rei-reverse-engineer-home.jpg)
+<p align="center">
+  <a href="#start-the-desktop">Desktop setup</a> · <a href="#connect-your-ai">AI connections</a> · <a href="#use-the-python-workbench">CLI &amp; MCP</a> · <a href="#what-is-verified">Verification</a> · <a href="#responsible-use-and-legal-disclaimer">Legal notice</a>
+</p>
 
-*Unaltered capture of the running Windows app. This is the project request
-screen; it does not depict a completed AI build.*
+---
+
+## From an unknown artifact to a defensible finding
+
+Reverse engineering starts with questions: What is this file? What changed? Which tool can answer the next question? What evidence supports the conclusion?
+
+REI Reverse Engineer brings those steps into one native workspace. The Rust application connects the Rootcastle Python workbench and the separately versioned REA server through local MCP. AI providers help navigate the work; artifact identity, coverage limits and source references keep the investigation grounded.
+
+| Identify | Investigate | Preserve | Connect |
+| :--- | :--- | :--- | :--- |
+| Static signatures, full-file SHA-256 and bounded metadata. | PE, ELF and WASM structures, version differences and format-aware plans. | Local case records, confidence labels and integrity-checked exports. | Native Rust tools, Python MCP, upstream REA and configurable AI backends. |
+
+**124 catalog entries · 14 Python MCP tools · 234 upstream MCP tools · 12 specialist skills**
+
+These numbers describe different things. Catalog entries are metadata; discovered routes are callable interfaces. Neither establishes that every tool is installed, authorized or verified on your machine.
+
+## Inside the native application
+
+![REI Reverse Engineer running on Windows](docs/images/rei-reverse-engineer-home.jpg)
+
+*Actual, unaltered Windows application capture. The image shows the project request screen, not a completed AI build or an analysis result.*
+
+The desktop provides a shared interface for projects, AI connections and tool results. The launcher registers the Python and upstream MCP servers with the native engine. Their results reach the same desktop evidence interface, while each server retains its own storage.
+
+The application is a licensed source fork of [Craft Anything](https://github.com/storytold/craft-anything), adapted with Rootcastle identity, isolated settings and the REI integration. The [original REA project](https://github.com/morluto/rea) remains pinned separately. See [source provenance](#open-source-provenance).
+
+> [!IMPORTANT]
+> **Development preview.** The Windows application has been built and opened locally. Real static-analysis calls have passed through both MCP bridges. This is an unsigned source-build preview; all 248 external routes, third-party analyzers and AI-assisted workflows have not been individually validated.
+
+## Start the desktop
+
+**Windows x64 prerequisites:** Git, Python 3.10+, Rust 1.97.0, Visual Studio C++ build tools and the Windows SDK. Python 3.11+ is recommended for merging newly available upstream settings into an existing profile.
 
 ```powershell
+git clone https://github.com/rootcastleco/Rei-Reverse-engineer.git
+cd Rei-Reverse-engineer
 python -m pip install -e .
 git submodule update --init
+
 ./scripts/setup_upstream.ps1
 ./scripts/build_desktop.ps1
 ./scripts/run_desktop.ps1 -Python (Get-Command python).Source
 ```
 
-The desktop build requires Rust 1.97.0 and Visual Studio C++ tools / Windows SDK.
-The upstream setup downloads the pinned Node runtime and locked dependencies;
-it keeps the system Node installation intact. The source checkout is a
-Windows x64 development setup, not a signed installer.
+Setup downloads a pinned project-local Node runtime, locked upstream dependencies and the version-matched REA native addon. The build script compiles the desktop from source. The launcher prepares local MCP settings and refreshes tool discovery before opening the application.
 
-The launcher configures local MCP servers, refreshes their tool schemas and
-starts the application. External tools remain consent-gated; artifact-reading
-plugins require Deep mode. Existing user settings are retained. The servers
-keep their own evidence stores while their results flow through the same
-desktop evidence interface.
+After the first build, double-click **`REI Reverse Engineer.cmd`** to start the combined workbench. Use the launcher to supply the Python runtime and MCP profile. Existing user settings are retained; `REI_CONFIG_DIR` selects an alternative profile.
 
-After building, double-click `REI Reverse Engineer.cmd` to open the combined
-workbench. The standalone executable opens the Rust app; the launcher supplies
-the shared MCP profile and Python runtime discovery.
+[Desktop guide](desktop/README.md) · [Rootcastle fork notes](desktop/ROOTCASTLE.md) · [Integration evidence](docs/DESKTOP-VERIFICATION.md)
 
-- [Desktop setup and source attribution](desktop/README.md)
-- [Experiential API and account-based Codex/Antigravity connections](docs/AI-CONNECTIONS.md)
-- [Measured integration evidence and remaining limitations](docs/DESKTOP-VERIFICATION.md)
-- [Python CLI and MCP quick start](#quick-start)
+## Connect your AI
 
-The desktop is derived from [Craft Anything](https://github.com/storytold/craft-anything)
-under MIT OR Apache-2.0, with original notices retained. The original
-[morluto/rea](https://github.com/morluto/rea) stays separately versioned.
-Rootcastle maintains the product identity, Python workbench and MCP integration.
+Open **Settings → AI** and choose the connection that matches your account and environment.
 
----
+| Connection | How it works | What you need |
+| :--- | :--- | :--- |
+| **Experiential Labs** | OpenAI-compatible gateway, streaming responses and live model listing. | Your provider API key in the masked field or `EXPLABS_API_KEY`. |
+| **ChatGPT account / Codex** | The installed official Codex CLI opens its browser sign-in flow. | Codex CLI and an eligible ChatGPT account. |
+| **Google account / Antigravity** | The installed official Antigravity CLI handles provider sign-in. | Antigravity CLI and the required account access. |
+| **Codex Cloud** | Opens the official cloud workspace in your browser. | A supported account; local REI operations use the CLI connection. |
+| **Other backends** | Configure supported agent, hosted or compatible server connections. | The selected backend's runtime, credentials and terms. |
 
-> **Upstream updates:** The original [morluto/rea](https://github.com/morluto/rea) revision is tracked separately in [upstream/rea](upstream/rea) and receives scheduled review PRs. [How synchronization works](docs/UPSTREAM-SYNC.md).
+Account sign-in is handled by the official CLI. REI does not scrape browser cookies, read provider credential caches or retain login output. Missing CLI installations show setup links. Antigravity's dedicated login command is version-dependent; terminal onboarding and Detect/Add are the documented fallback.
 
-### Evidence-first reverse engineering. One workbench. Verifiable findings.
+**No API key does not mean free or unlimited access.** Provider plans, quotas and charges still apply. Codex Cloud is a separate web workspace; opening it does not turn its browser session into a local chat API.
 
-[![CI](https://github.com/rootcastleco/Rei-Reverse-engineer/actions/workflows/ci.yml/badge.svg)](https://github.com/rootcastleco/Rei-Reverse-engineer/actions/workflows/ci.yml)
-[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-0E3D8A?logo=python&logoColor=white)](https://www.python.org/)
-[![MCP server](https://img.shields.io/badge/MCP-14%20tools-228B55)](#connect-an-ai-coding-agent)
-[![License: MIT](https://img.shields.io/badge/license-MIT-0E3D8A)](LICENSE)
-[![Status: Alpha](https://img.shields.io/badge/status-v0.2.0%20alpha-555555)](CHANGELOG.md)
+When you select a hosted model or cloud agent, submitted prompts, tool results and context may leave your machine. Review sensitive material and the provider's policies before sharing. See [AI setup, official references and verification limits](docs/AI-CONNECTIONS.md).
 
-**REI REA (Rootcastle Reverse Engineering Workbench)** gives developers and security researchers a consistent starting point for inspecting software artifacts, finding suitable analysis tools, and recording what the evidence actually supports.
+## What you can do today
 
-It brings together a **124-entry reverse-engineering tool catalog**, **read-only artifact triage**, **SHA-256 evidence cases**, a **JSON command-line interface**, a local **Model Context Protocol (MCP) server**, a **loopback dashboard**, and **12 specialist AI-agent skills**.
+| Surface | Available capability | Boundary |
+| :--- | :--- | :--- |
+| **Native desktop** | Projects, AI configuration and native/MCP tool dispatch. | Windows source-build preview; unsigned. |
+| **Python analysis** | Identification; bounded PE/ELF/WASM parsing; signals and structural comparison. | Partial format coverage; no decompilation or target execution. |
+| **Evidence cases** | SHA-256 identity, hash-linked notes, SQLite metadata search and portable bundles. | Integrity checks do not establish semantic truth or a signed chain of custody. |
+| **Tool catalog** | 124 searchable records with capabilities and PATH discovery. | A record does not install or integrate its tool. |
+| **External adapters** | Eleven fixed static CLI adapters and twelve provider profiles. | Explicit opt-in; only reviewed operations execute. Many profiles are discovery-only. |
+| **Python MCP** | Fourteen structured local operations. | Case creation writes metadata; other tools are read-only. No arbitrary shell runner. |
+| **Upstream REA bridge** | 234 discovered tools at the pinned revision. | Static entropy dispatch verified; other operations retain upstream requirements and consent boundaries. |
+| **Agent skills** | Twelve specialist investigation guides. | Guidance is distinct from an installed analysis engine. |
 
-The objective is not to produce confident-looking pseudocode. It is to make each conclusion **traceable, testable, and reproducible**.
+Keep four states separate: **cataloged → PATH-detected → adapter-supported → end-to-end-verified**. A later state requires its own evidence.
 
-> [!IMPORTANT]
-> **Alpha scope, stated precisely.** REI REA is an original Rootcastle implementation, not an official fork or feature-parity replacement of [morluto/rea](https://github.com/morluto/rea). A catalog entry does **not** mean a tool is installed, integrated, or validated. Eleven fixed static CLI adapters are implemented. External decompilers, debuggers, mobile instrumentation systems, and the upstream REA server are **not included**. See [Capabilities and limitations](#capabilities-and-limitations).
+Read the [provider contracts](docs/PROVIDERS.md), [core specification](docs/SPEC.md) and [desktop specification](docs/DESKTOP-SPEC.md) for exact scope.
 
-**[Quick start](#quick-start)** · **[Capabilities](#capabilities-and-limitations)** · **[Architecture](#architecture)** · **[MCP integration](#connect-an-ai-coding-agent)** · **[Agent skills](#twelve-specialist-agent-skills)** · **[Security](#safety-and-trust-boundaries)** · **[Roadmap](docs/ROADMAP.md)**
+## Use the Python workbench
 
----
-
-## What makes REI REA different?
-
-A reverse-engineering session usually involves multiple disconnected tools. Findings end up scattered across terminals, screenshots, notes, and decompiler projects. REI REA provides a small, explicit control plane around that work.
-
-| Problem | REI REA approach | What is available today |
-| --- | --- | --- |
-| Which tool should I use? | Query one registry by artifact type and capability. | 124 catalog entries with tags, homepages, and PATH checks. |
-| What exactly did I inspect? | Identify the target before discussing behavior. | SHA-256 hashes, bounded format inspection, and archive metadata. |
-| Can I reproduce this finding? | Keep observations linked to one artifact identity. | Local hash-linked case events and integrity verification. |
-| Can an AI agent use the same evidence? | Expose structured operations over a single interface. | JSON CLI plus fourteen local stdio MCP tools. |
-| Can I add more analysis engines? | Use isolated provider contracts instead of rewriting the core. | Eleven opt-in static adapters; advanced providers are planned. |
-| Is a model's explanation proof? | Distinguish what was seen from what was inferred. | `observed`, `inferred`, and `unknown` evidence states. |
-
-**Three distinct facts must never be conflated:**
-
-1. **Cataloged:** a tool appears in the registry.
-2. **Detected:** its executable name exists on the local `PATH`.
-3. **Supported:** REI REA has a reviewed adapter for that operation.
-
-Even a supported operation is **not end-to-end verified** until its output is checked against the specific artifact and environment.
-
-## Quick start
-
-**Requirements:** Python 3.10 or later, Git, and a local file that you own or are permitted to inspect. The core has no third-party Python runtime dependencies.
+The dependency-free Python core also works independently of the desktop on Windows, Linux and macOS with Python 3.10+.
 
 ```bash
-git clone https://github.com/rootcastleco/Rei-Reverse-engineer.git
-cd Rei-Reverse-engineer
 python -m pip install -e .
-
 rei-rea --version
 rei-rea tools doctor
 rei-rea tools list --tag android
-```
 
-Inspect one artifact **without executing it**:
+# Read-only inspection of an artifact you are authorized to analyze.
+rei-rea inspect /path/to/sample.bin
+rei-rea deep /path/to/sample.exe
+rei-rea investigate /path/to/sample.wasm
 
-```bash
-rei-rea inspect /path/to/your/sample.bin
-rei-rea signals /path/to/your/sample.bin
-rei-rea plan /path/to/your/sample.bin
-rei-rea deep /path/to/your/sample.exe
-rei-rea investigate /path/to/your/sample.wasm
-```
-
-Compare two versions:
-
-```bash
+# Compare exact artifacts and their parsed structures.
 rei-rea compare /path/to/old.bin /path/to/new.bin
 rei-rea diff /path/to/old.wasm /path/to/new.wasm
 ```
 
-These operations return structured JSON. Inspection uses signatures and bounded metadata reads; it does not decompile, unpack, or run the target. `signals --include-strings` is optional because extracted strings can contain confidential values.
+Commands return structured JSON. Built-in inspection does not execute or unpack the target. `signals --include-strings` is optional because extracted strings can expose confidential data. The combined investigation pipeline accepts files up to 64 MiB.
 
-### Record a reproducible investigation
-
-```bash
-rei-rea case init /path/to/your/sample.bin --workspace .rei-cases
-```
-
-Use the case directory returned by the command:
+### Keep a reproducible case
 
 ```bash
-rei-rea case note .rei-cases/CASE-ID \
-  --type analyst-note \
+rei-rea case init /path/to/sample.bin --workspace .rei-cases
+
+# Replace CASE-ID with the directory returned above.
+rei-rea case note .rei-cases/CASE-ID --type analyst-note \
   --text 'Header at offset 0x20 requires verification' \
-  --source 'artifact:0x20' \
-  --confidence inferred
+  --source 'artifact:0x20' --confidence inferred
 
 rei-rea case verify .rei-cases/CASE-ID --recheck-target
 rei-rea case report .rei-cases/CASE-ID --output finding.md
@@ -155,91 +143,11 @@ rei-rea case bundle .rei-cases/CASE-ID case-evidence.zip
 rei-rea case bundle-verify case-evidence.zip
 ```
 
-Every case has a target identity and a hash-linked observation sequence. The verifier detects changes to that local record. **This is tamper-evident bookkeeping, not a signed chain of custody or a trusted timestamp service.** Keep source artifacts and generated reports in an access-controlled workspace.
+Findings distinguish `observed`, `inferred` and `unknown`. Case bundles contain metadata, notes and integrity manifests, **never the original binary**. Review notes and paths before sharing. A valid hash chain detects changes to a record; it does not prove that its conclusions are correct.
 
-## New in v0.2.0 — real structural analysis
+### Connect an MCP client
 
-The dependency-free core can now parse **PE headers and imported APIs**, **ELF program/section tables and shared-library dependencies**, and **WebAssembly version 1 imports/exports** using bounded local reads. `rei-rea diff` compares parsed structures across exact artifact hashes; `rei-rea investigate` combines identification, bounded analysis, signal scanning and an evidence-aware plan, cross-checking the hash before and after each step.
-
-A new **SQLite casebook** explicitly indexes local case metadata for search by name, hash or format. Case exports include the manifest, hash-chain events, report and checksum manifest—**never original binaries**. See [v0.2 upgrade contract](docs/UPGRADE-V0.2.md).
-
-> This is **structural inspection, not decompilation or code execution**. PE/ELF/WASM parsers are intentionally partial implementations of large specifications. A complete parser status means the bounded parser finished without error, not that every security property has been verified.
-
-## Capabilities and limitations
-
-| Area | Status in v0.2.0 | Implementation boundary |
-| --- | --- | --- |
-| Tool discovery | **Implemented** | 124 metadata records; filtered searches and PATH availability. |
-| Artifact identification | **Implemented** | Static header checks for PE, ELF, Mach-O, WASM, DEX, SQLite, PCAP, and archive indicators. |
-| PE/ELF/WASM structure | **Implemented** | Bounded sections, imports/exports, ELF needed libraries, WASM section inventory; no full semantic validation. |
-| Local casebook | **Implemented** | Explicit SQLite metadata index/search, portable hash-checked evidence bundles. |
-| Single-call investigation | **Implemented** | Static pipeline with SHA cross-check; file size limited to 64 MiB. |
-| Bounded signals | **Implemented** | Entropy/signature probes and optional strings; scanning is capped. |
-| Version comparison | **Implemented** | File hashes and bounded byte differences. |
-| Local evidence cases | **Implemented** | SHA-256 identity, append-only hash-linked event records, verification, and Markdown reports. |
-| CLI and agent transport | **Implemented** | JSON CLI and fourteen stdio MCP tools. |
-| Dashboard | **Implemented** | Loopback-only catalog view; no target execution. |
-| External static adapters | **Opt-in** | Eleven fixed commands; only executable tools present on the machine can run. |
-| Ghidra / IDA / Rizin session control | **Planned** | Names may be cataloged; no live session provider is included. |
-| JADX / Frida / emulator automation | **Planned** | Skills document procedures, not active runtime integration. |
-| Upstream REA MCP compatibility | **Planned** | No API-parity claim or bundled upstream server. |
-| Firmware flashing or live network testing | **Not supported** | Excluded from this alpha gateway. |
-
-The fixed external adapters are `file`, `readelf`, `objdump`, `llvm-objdump`, `llvm-readobj`, `nm`, `exiftool`, `otool`, `aapt2` (catalog ID `android-aapt2`), `rabin2` and `rz-bin`. Each requires explicit opt-in and runs without a shell or user-supplied arbitrary flags.
-
-```bash
-# Only if readelf is separately installed and the file is authorized:
-rei-rea run readelf /path/to/your/example.elf --allow-external --timeout 12
-```
-
-A failed or missing external parser does not disable the built-in inspection path.
-
-## Architecture
-
-```mermaid
-flowchart TD
-    U["Analyst / coding agent"] --> CLI["JSON CLI"]
-    U --> MCP["Local stdio MCP · 14 tools"]
-    U --> UI["Loopback dashboard"]
-    CLI --> Core["REI REA control plane"]
-    MCP --> Core
-    UI --> Core
-    Core --> Registry["124-tool capability catalog"]
-    Core --> Inspector["Static artifact inspector"]
-    Core --> Planner["Format-aware investigation planner"]
-    Core --> Evidence["SHA-256 evidence cases"]
-    Core --> Adapter["Eleven fixed static adapters · explicit opt-in"]
-    Adapter -. "PATH-installed executable" .-> Local["External analysis tool"]
-    Future["Future provider API: REA / Ghidra / JADX / Frida"] -. "not implemented" .-> Core
-```
-
-The code is deliberately separated into focused components:
-
-```text
-src/rei_rea/
-├── cli.py          # Command-line entry point and JSON output
-├── mcp.py          # Model Context Protocol, stdio JSON-RPC
-├── registry.py     # Canonical tool lookup and approved static adapters
-├── inspector.py    # File identity, signatures, bounded archive inspection
-├── signals.py      # Bounded signal analysis and binary comparisons
-├── planner.py      # Artifact-aware routes into specialist skills
-├── evidence.py     # Hash-linked local cases and reports
-├── web.py          # Loopback-only HTTP server
-├── data/tools.json # Generated tool catalog
-└── webui/           # Local dashboard
-```
-
-See [architecture and contracts](docs/ARCHITECTURE.md), [threat model](docs/THREAT_MODEL.md), and [system requirements](docs/SPEC.md). Integration points are designed to preserve the stable core when future backends are introduced.
-
-## Connect an AI coding agent
-
-REI REA provides a **local stdio MCP server**. Start it directly:
-
-```bash
-rei-rea mcp
-```
-
-For MCP clients that use the `mcpServers` JSON format, a typical entry is:
+Start the server with `rei-rea mcp`, or configure a client that accepts `mcpServers`:
 
 ```json
 {
@@ -252,133 +160,108 @@ For MCP clients that use the `mcpServers` JSON format, a typical entry is:
 }
 ```
 
-The `rei-rea` executable must be available in the environment used by your MCP client. Some clients require a full executable path and a restart after configuration.
+Use an absolute executable path if your client cannot resolve `rei-rea`. Client permissions and OS access controls still apply. The Python server exposes fourteen tools; the desktop upstream bridge is configured separately by the launcher.
 
-**Fourteen exposed MCP tools:**
+<details>
+<summary><strong>View the Python MCP tool reference</strong></summary>
 
 | Tool | Purpose |
-| --- | --- |
-| `rei_rea_providers` | Discover provider profiles without execution. |
+| :--- | :--- |
+| `rei_rea_providers` | Discover provider profiles. |
 | `rei_rea_tools` | Filter catalog entries. |
-| `rei_rea_doctor` | Inspect local PATH availability. |
+| `rei_rea_doctor` | Inspect PATH availability. |
 | `rei_rea_inspect` | Identify and hash an artifact. |
-| `rei_rea_plan` | Produce an evidence-based investigation plan. |
+| `rei_rea_plan` | Plan an investigation. |
 | `rei_rea_signals` | Read bounded file signals. |
-| `rei_rea_compare` | Compare two local files. |
-| `rei_rea_case_create` | Start an evidence case. |
-| `rei_rea_case_verify` | Validate a case record. |
-| `rei_rea_investigate` | Read-only cross-hash-checked static analysis pipeline. |
+| `rei_rea_compare` | Compare local files. |
+| `rei_rea_case_create` | Create a local evidence case. |
+| `rei_rea_case_verify` | Verify a case record. |
+| `rei_rea_investigate` | Run the static pipeline with hash cross-checks. |
 | `rei_rea_deep` | Parse bounded PE/ELF/WASM structures. |
-| `rei_rea_diff` | Compare binary structures across versions. |
-| `rei_rea_case_search` | Search an existing local casebook index. |
-| `rei_rea_bundle_verify` | Check checksums of an exported evidence bundle. |
+| `rei_rea_diff` | Compare parsed structures. |
+| `rei_rea_case_search` | Search an existing casebook index. |
+| `rei_rea_bundle_verify` | Verify an exported evidence bundle. |
 
-MCP registration gives access to **these fourteen operations only**. It does not install third-party engines, grant new filesystem permissions, or create a remote analysis service. Client-specific permission settings still apply.
+</details>
 
-## Twelve specialist agent skills
+The catalog dashboard runs with `rei-rea serve --port 8765` at **http://127.0.0.1:8765**. It is a loopback catalog viewer, with no target uploads or executable launch interface.
 
-Each skill is a separate directory with `SKILL.md`, agent metadata, and reference material. Skills route the investigation. They are **not executable analysis engines**.
+## How the parts work together
 
-| Skill | Investigation domain |
-| --- | --- |
-| [`rei-rea-orchestrator`](skills/rei-rea-orchestrator/) | Intake, evidence routing, tool selection, and verification. |
-| [`rei-binary-intelligence`](skills/rei-binary-intelligence/) | Built-in bounded PE/ELF/WASM structural and version-diff analysis. |
-| [`rei-casebook-forensics`](skills/rei-casebook-forensics/) | SQLite evidence casebook and metadata-only bundle handoff. |
-| [`rei-native-binaries`](skills/rei-native-binaries/) | PE, ELF, Mach-O, symbols, imports, and ABI. |
-| [`rei-electron-and-js`](skills/rei-electron-and-js/) | Electron, ASAR, Node.js, preload scripts, and IPC. |
-| [`rei-android-apks`](skills/rei-android-apks/) | Android APK/AAB, DEX, manifest, and JNI. |
-| [`rei-firmware-and-iot`](skills/rei-firmware-and-iot/) | Embedded firmware, MCU, UEFI, GPS, and IoT. |
-| [`rei-mobile-runtime`](skills/rei-mobile-runtime/) | Authorized mobile observation and instrumentation planning. |
-| [`rei-evidence-ledger`](skills/rei-evidence-ledger/) | Artifact provenance, confidence, and audit. |
-| [`rei-reconstruction-parity`](skills/rei-reconstruction-parity/) | Behavioral specifications and golden-test comparisons. |
-| [`rei-web-and-protocols`](skills/rei-web-and-protocols/) | HAR, PCAP, APIs, telemetry frames, and protocol reconstruction. |
-| [`rei-wasm-and-managed`](skills/rei-wasm-and-managed/) | WebAssembly, JVM bytecode, and .NET assemblies. |
-
-Read [skills installation and packaging](docs/SKILLS.md). Install the Python workbench separately; importing a skill does not register MCP or provide a local tool binary.
-
-## Local dashboard
-
-```bash
-rei-rea serve --port 8765
+```mermaid
+flowchart LR
+    Analyst["Analyst"] --> Desktop["REI native desktop · Rust"]
+    Desktop <--> AI["Configured AI backend / official agent CLI"]
+    Desktop --> Native["Native engine tools"]
+    Desktop --> Bridge["Local MCP routing"]
+    Bridge --> Python["Rootcastle Python · 14 tools"]
+    Bridge --> Upstream["Pinned upstream REA · 234 tools"]
+    CLI["JSON CLI / external MCP client"] --> Python
+    Python --> Registry["124-entry tool catalog"]
+    Python --> Cases["Python case records"]
+    Upstream --> Store["Upstream evidence store"]
 ```
 
-Visit **http://127.0.0.1:8765**. The dashboard displays the tool registry and local availability indicators. It does not accept uploads, inspect arbitrary remote hosts, or run third-party executables. It binds to loopback; do not expose it through a public reverse proxy without a separate security review.
+Dispatch and evidence presentation are shared in the desktop. Storage remains owned by each engine. External tools and artifact-reading operations retain the desktop's consent and mode controls.
 
-## Safety and trust boundaries
+## Specialist investigation skills
 
-REI REA is intended for **owned artifacts, authorized security research, interoperability, software preservation, and controlled laboratory analysis**.
+Twelve packages cover orchestration, bounded binary analysis, native binaries, Electron/JavaScript, Android, firmware/IoT, authorized mobile runtime work, evidence ledgers, casebook forensics, reconstruction parity, web/protocols, and WASM/managed code.
 
-- **Read-only first.** `inspect`, `signals`, `plan`, `compare`, and registry lookup do not execute target code.
-- **External tools are never launched implicitly.** Fixed adapters require `--allow-external`. Use disposable, low-privilege environments for untrusted files.
-- **Evidence is not certainty.** File names, strings, and reconstructed pseudocode are not proof of actual runtime behavior.
-- **Artifact data remains local by design.** Case records hold metadata and analyst notes; review sensitive strings before sharing reports.
-- **No general remote scanner, shell runner, firmware flasher, or license bypass mechanism** is included in this alpha.
+Browse [the skill packages](skills/) and [installation guide](docs/SKILLS.md). Installing a skill supplies instructions, not a binary analyzer, MCP registration or permission to test a third-party system.
 
-Read [SECURITY.md](SECURITY.md) for reporting and [the threat model](docs/THREAT_MODEL.md) for the relevant trust boundaries.
+## What is verified
 
-## Development and verification
+Local evidence was recorded on **Windows 11 x64 · Rust 1.97.0 · Python 3.14.7 · Node 24.22.1**:
+
+- Native executable built; its real window was opened and inspected.
+- MCP discovery registered **248 external routes**. Python artifact identification and upstream byte-entropy analysis both returned through the desktop engine for the same synthetic WASM fixture and SHA-256.
+- The AI/UI/CLI Rust suite passed **352 tests**. The Python suite ran **65 tests: 64 passed, one optional-tool skip**.
+- All **12 root skills** validated. Formatting, Clippy with warnings denied, layer checks, lock checks and the source secret scan passed.
+- Experiential streaming and model listing passed loopback integration tests. **Live paid API calls and user OAuth sign-in were not performed.**
+
+These checks apply to the recorded environments and operations. They do not verify all upstream tools, decompiler accuracy, device behavior, AI-generated rebuild quality or production readiness. The pinned upstream npm installation reported **11 moderate advisories**; release hardening remains open. Remote results are available in [GitHub Actions](https://github.com/rootcastleco/Rei-Reverse-engineer/actions).
+
+[Desktop verification evidence](docs/DESKTOP-VERIFICATION.md) · [AI verification boundaries](docs/AI-CONNECTIONS.md) · [Core stabilization](docs/STABILIZATION.md)
+
+## Develop and contribute
 
 ```bash
 python -m pip install -e .
-python -m unittest discover -s tests -v
-python -m rei_rea --version
+PYTHONPATH=src python -m unittest discover -s tests -v
+python scripts/generate_catalog.py
 ```
 
-Verification is recorded per commit and environment in [the stabilization report](docs/STABILIZATION.md). GitHub Actions tests Python 3.10 and 3.13 on Linux, Windows and macOS. A local test pass does not establish remote CI or external-provider compatibility.
+On PowerShell, set `$env:PYTHONPATH = 'src'` before the unittest command. Python CI covers Python 3.10 and 3.13 on Linux, Windows and macOS. The desktop workflow builds and tests Windows separately.
 
-Hardware behavior, mobile instrumentation, third-party engine accuracy, native decompilation parity, cloud deployment, and production performance are **not yet verified**.
+Start with [AGENTS.md](AGENTS.md), [the architecture](docs/ARCHITECTURE.md), [the threat model](docs/THREAT_MODEL.md) and existing tests. Add capabilities through reviewed adapters with contracts and regression coverage. Keep customer binaries, secrets and proprietary samples out of this public repository.
 
-## Roadmap
+Next priorities include provider-specific verification, parser fuzzing, dependency remediation and signed desktop releases. See [the roadmap](docs/ROADMAP.md), [learning path](docs/LEARNING_PATH.md) and [upstream synchronization policy](docs/UPSTREAM-SYNC.md).
 
-The next technical milestones are:
+## Responsible use and legal disclaimer
 
-1. Formalize a versioned provider interface with capability and authorization checks.
-2. Integrate upstream REA and selected native tools without changing the evidence contract.
-3. Add reproducible fixtures for ELF/PE, Electron IPC, APKs, firmware images, and protocol captures.
-4. Add indexed case search, provenance export, and more rigorous differential verification.
-5. Run cross-platform CI, dependency reviews, and release hardening before a stable version.
+> [!WARNING]
+> **Authorized use only. Use at your own risk.** Analyze only software, devices, recordings and systems you own or have explicit permission to inspect. You are responsible for your actions, legal compliance, permissions, data handling and third-party service charges.
 
-Track the scope and acceptance gates in [docs/ROADMAP.md](docs/ROADMAP.md). For a practical self-study path, read [the reverse-engineering learning roadmap](docs/LEARNING_PATH.md).
+**To the maximum extent permitted by applicable law, Rootcastle Engineering & Innovation, the authors, maintainers and contributors provide this software “AS IS” and “AS AVAILABLE,” without warranties, and disclaim liability for claims, losses or damages arising from its use, misuse or inability to use it.** This includes unauthorized activity, inaccurate analysis or AI output, data loss, security incidents, service interruption, device damage and third-party costs.
 
-## Frequently asked questions
+No tool output or reconstruction guarantees correctness, safety, ownership or legal permission. Reconstructed or decompiled output must not be represented as original source. Dynamic analysis, live probing and firmware modification require separate scoped authorization and isolation. This project does not grant permission to bypass licenses, access controls or other parties' rights.
 
-<details>
-<summary><strong>Does REI REA contain 124 working analysis integrations?</strong></summary>
+**These exclusions apply only where legally enforceable. Nothing excludes liability or rights that applicable law does not allow to be excluded.** Read the complete [Responsible Use & Legal Disclaimer](DISCLAIMER.md), [MIT License](LICENSE) and [security reporting policy](SECURITY.md).
 
-No. It has 124 **catalog records**. Eleven fixed static tool adapters are implemented, and each adapter needs its executable installed locally. The other records are discovery-only.
-</details>
+## Open-source provenance
 
-<details>
-<summary><strong>Is this the same project as morluto/rea?</strong></summary>
+| Component | Origin and license | Maintenance |
+| :--- | :--- | :--- |
+| **Rootcastle Python workbench and integration** | [MIT](LICENSE), © 2026 Batuhan AYRIBAS. | Original implementation in `src/rei_rea/` and integration scripts. |
+| **Native desktop foundation** | [Craft Anything](https://github.com/storytold/craft-anything), MIT OR Apache-2.0. | Licensed fork in `desktop/`; exact revision in [ROOTCASTLE-FORK.json](desktop/ROOTCASTLE-FORK.json). |
+| **Upstream REA** | [morluto/rea](https://github.com/morluto/rea), under its retained license. | Separately pinned submodule; connected through local MCP. |
+| **Fonts, icons and dependencies** | Their respective licenses. | Retained [NOTICE](desktop/NOTICE), [ATTRIBUTION](desktop/ATTRIBUTION.md) and license documentation. |
 
-No. [morluto/rea](https://github.com/morluto/rea) is an independent project. REI REA is an original Rootcastle control plane with its own implementation and evidence contract. Upstream integration is a future adapter, not a current feature.
-</details>
+Keep required notices with redistributions. Code licenses do not grant third-party trademark rights. Rootcastle branding identifies this adaptation; no upstream or provider endorsement or affiliation is implied.
 
-<details>
-<summary><strong>Can it decompile an APK or control Ghidra automatically?</strong></summary>
-
-Not in v0.2.0. The registry helps you discover relevant tools, and the skills document investigation workflows. Automated Ghidra, JADX, and Frida providers remain future work.
-</details>
-
-<details>
-<summary><strong>What does a verified finding mean?</strong></summary>
-
-The local hash chain and artifact identity have been checked. It does **not** automatically establish that the analyst's conclusion is correct. Semantic accuracy still requires independent evidence and suitable tests.
-</details>
-
-## Project, credit, and license
-
-**Built by [Rootcastle Engineering & Innovation](https://rootcastle.com).** Distributed under the [MIT License](LICENSE), copyright © 2026 Batuhan Ayrıbaş (license file uses `Batuhan AYRIBAS`). Third-party tools remain under their own licenses; the catalog does not redistribute their code or binaries.
-
-**Upstream credit:** [morluto/rea](https://github.com/morluto/rea) provides a separate reverse-engineering agent project and an important reference for the skill/MCP ecosystem. REI REA is not endorsed by its maintainers. Additional technical sources and publications are listed in [docs/SOURCES.md](docs/SOURCES.md).
-
-**Discoverability metadata:** The canonical repository description and GitHub Topics are maintained in [`.github/repository-metadata.json`](.github/repository-metadata.json). See [the publication checklist](docs/DISCOVERABILITY.md) to apply them to the GitHub repository's About section.
+The header uses the official [Rootcastle logo](https://rootcastle.com/brand/rootcastle-rei.svg) in an original SVG composition. See [artwork provenance](docs/images/README.md). Discovery metadata is maintained in [repository-metadata.json](.github/repository-metadata.json).
 
 ---
 
-<p align="center"><sub>REI REA · Rootcastle Engineering & Innovation · Measure first. Reconstruct second. Verify always.</sub></p>
-
-
-## External analysis providers (v0.3 preview)
-
-Twelve additional provider profiles are available through `rei-rea providers list`, with opt-in read-only inspection for radare2/rabin2, Rizin/rz-bin and LLVM readobj. The remaining providers are *discovery-only*. No third-party tools are automatically installed or executed, and the MCP server offers inventory without external execution. See [reviewed provider contracts](docs/PROVIDERS.md).
+<p align="center"><strong>ROOTCASTLE · ENGINEERING &amp; INNOVATION</strong><br><a href="https://rootcastle.com">rootcastle.com</a> · <a href="https://github.com/rootcastleco">Open-source engineering</a><br><sub>Measure first. Reconstruct second. Verify always.</sub></p>
