@@ -11,3 +11,9 @@ dist/
 *.log
 *.sqlite3
 .DS_Store
+
+.tools/
+desktop/target/
+
+.rei-desktop/
+Projects/

@@ -1,0 +1,16 @@
+{
+  "product": "REI Reverse Engineer Desktop",
+  "upstream": "https://github.com/storytold/craft-anything",
+  "revision": "ecbd519c6a4bac713bcd0ad1efa6b042c3c3e7da",
+  "upstream_version": "0.3.0",
+  "license": "MIT OR Apache-2.0",
+  "fork_changes": [
+    "product identity",
+    "Rootcastle palette and original monogram",
+    "isolated settings directory",
+    "rootcastle-rei executable",
+    "Python REI MCP integration",
+    "upstream REA MCP integration",
+    "unified evidence routing and bridge diagnostic"
+  ]
+}

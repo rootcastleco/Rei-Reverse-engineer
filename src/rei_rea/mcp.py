@@ -23,7 +23,9 @@ MAX_INBOUND = 1024 * 1024
 
 def _tool(name: str, description: str, properties: dict, required: list[str] | None = None) -> dict:
     return {"name": f"rei_rea_{name}", "description": description,
-            "inputSchema": {"type": "object", "properties": properties, "required": required or [], "additionalProperties": False}}
+            "inputSchema": {"type": "object", "properties": properties, "required": required or [], "additionalProperties": False},
+            "annotations": {"readOnlyHint": name != "case_create", "destructiveHint": False,
+                            "idempotentHint": name != "case_create", "openWorldHint": False}}
 
 
 TOOLS = [

@@ -1,4 +1,54 @@
-# REI REA
+# REI Reverse Engineer
+
+**Native desktop fork:** [Rootcastle REI Desktop](desktop/ROOTCASTLE.md) adapts
+the Craft Anything Rust application under its original open-source licenses.
+Its source is in `desktop/`; `scripts/build_desktop.ps1` builds the Windows
+application. The Rust desktop and Python workbench currently have separate engines
+and evidence stores. See the desktop guide for verification status and provenance.
+
+## Native desktop preview
+
+**REI Reverse Engineer** brings the Rust desktop engine, the Python REI
+workbench and the original REA MCP server into one native tool interface.
+The Windows preview was built and opened locally. The bridge discovered
+14 Python tools and 234 upstream tools, and completed real static-analysis
+calls through both servers. Individual engine operations have separate
+requirements and verification status.
+
+![REI Reverse Engineer — actual Windows application](docs/images/rei-reverse-engineer-home.jpg)
+
+*Unaltered capture of the running Windows app. This is the project request
+screen; it does not depict a completed AI build.*
+
+```powershell
+python -m pip install -e .
+git submodule update --init
+./scripts/setup_upstream.ps1
+./scripts/build_desktop.ps1
+./scripts/run_desktop.ps1 -Python (Get-Command python).Source
+```
+
+The desktop build requires Rust 1.97.0 and Visual Studio C++ tools / Windows SDK.
+The upstream setup downloads the pinned Node runtime and locked dependencies;
+it keeps the system Node installation intact. The source checkout is a
+Windows x64 development setup, not a signed installer.
+
+The launcher configures local MCP servers, refreshes their tool schemas and
+starts the application. External tools remain consent-gated; artifact-reading
+plugins require Deep mode. Existing user settings are retained. The servers
+keep their own evidence stores while their results flow through the same
+desktop evidence interface.
+
+- [Desktop setup and source attribution](desktop/README.md)
+- [Measured integration evidence and remaining limitations](docs/DESKTOP-VERIFICATION.md)
+- [Python CLI and MCP quick start](#quick-start)
+
+The desktop is derived from [Craft Anything](https://github.com/storytold/craft-anything)
+under MIT OR Apache-2.0, with original notices retained. The original
+[morluto/rea](https://github.com/morluto/rea) stays separately versioned.
+Rootcastle maintains the product identity, Python workbench and MCP integration.
+
+---
 
 > **Upstream updates:** The original [morluto/rea](https://github.com/morluto/rea) revision is tracked separately in [upstream/rea](upstream/rea) and receives scheduled review PRs. [How synchronization works](docs/UPSTREAM-SYNC.md).
 
