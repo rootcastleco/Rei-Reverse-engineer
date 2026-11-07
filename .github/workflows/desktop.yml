@@ -1,0 +1,44 @@
+name: REI Reverse Engineer desktop
+on:
+  pull_request:
+    paths: ['desktop/**', 'src/rei_rea/**', 'scripts/*desktop*', '.github/workflows/desktop.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows-desktop:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    env:
+      CARGO_PROFILE_DEV_DEBUG: '0'
+      CARGO_PROFILE_TEST_DEBUG: '0'
+      PYTHONPATH: ${{ github.workspace }}/src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            desktop/target
+          key: rei-windows-rust-1.97-${{ hashFiles('desktop/Cargo.lock') }}
+      - name: Install pinned compiler
+        run: rustup toolchain install 1.97.0 --profile minimal
+      - name: Build native app and bridge diagnostic
+        working-directory: desktop
+        run: cargo +1.97.0 build --locked -p craft-anything --bins
+      - name: Desktop and UI tests
+        working-directory: desktop
+        run: cargo +1.97.0 test --locked -p craft-anything -p craft-anything-ui-egui
+      - name: Real Python MCP bridge
+        shell: pwsh
+        run: |
+          python -m rei_rea.desktop_bridge --workspace . --config .rei-desktop
+          $env:REI_CONFIG_DIR = Join-Path $PWD '.rei-desktop'
+          $fixture = Join-Path $env:RUNNER_TEMP 'rei-test.wasm'
+          [IO.File]::WriteAllBytes($fixture, [byte[]](0,97,115,109,1,0,0,0))
+          & ./desktop/target/debug/rei-bridge-check.exe $fixture
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

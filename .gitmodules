@@ -1,3 +1,6 @@
 [submodule "upstream/rea"]
 	path = upstream/rea
 	url = https://github.com/morluto/rea.git
+[submodule "upstream/craft-anything"]
+	path = upstream/craft-anything
+	url = https://github.com/storytold/craft-anything.git
