@@ -265,3 +265,9 @@ The header uses the official [Rootcastle logo](https://rootcastle.com/brand/root
 ---
 
 <p align="center"><strong>ROOTCASTLE · ENGINEERING &amp; INNOVATION</strong><br><a href="https://rootcastle.com">rootcastle.com</a> · <a href="https://github.com/rootcastleco">Open-source engineering</a><br><sub>Measure first. Reconstruct second. Verify always.</sub></p>
+
+## Rootcastle project guide
+
+[Project overview and practical workflow](https://rootcastle.com/en/projects/rei-reverse-engineer/) · [Engineering walkthrough](https://rootcastle.com/en/engineering-notes/evidence-based-reverse-engineering/)
+
+The repository remains the reference for current setup, supported features and licensing. The project guide explains the workflow and its verification boundaries.
